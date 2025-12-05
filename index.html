@@ -28,7 +28,7 @@
             background-image: linear-gradient(to bottom, #ffffff, #e0f7fa);
             color: var(--color-text);
             line-height: 1.6;
-            /* ** 強化 iOS 滾動性能 ** */
+            /* 強化 iOS 滾動性能 */
             -webkit-overflow-scrolling: touch;
         }
 
@@ -76,7 +76,6 @@
             font-size: 2.5em;
         }
 
-        /* Container 調整為行動優先，移除 max-width: 1200px; 讓手機畫面更集中 */
         .container {
             /* 垂直間距調整為 20px，更符合手機的緊湊感 */
             margin: 20px auto;
@@ -88,13 +87,16 @@
         .city-nav {
             display: flex;
             justify-content: center;
-            gap: 10px; /* 稍微縮小間距 */
+            gap: 10px;
             margin-bottom: 20px;
-            /* 讓按鈕在小螢幕上可以捲動，而不是換行堆疊 (現代手機常用設計) */
-            overflow-x: unset;
-            -webkit-overflow-scrolling: touch; /* iOS 平滑捲動 */
-            white-space: nowrap; /* 確保按鈕不換行 */
-            padding-bottom: 0px; /* 增加一點底部空間，避免陰影被切掉 */
+            
+            /* ***** 關鍵修改：讓按鈕自動換行 (flex-wrap: wrap) ***** */
+            flex-wrap: wrap; 
+            overflow-x: unset; /* 取消橫向滾動 */
+            -webkit-overflow-scrolling: unset; /* 取消 iOS 平滑捲動 */
+            white-space: normal; /* 讓按鈕自動換行 */
+            padding-bottom: 0px; /* 恢復內邊距 */
+            /* ********************************************** */
         }
 
         .city-button {
@@ -109,14 +111,14 @@
             transition: all 0.3s ease;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08); /* 縮小陰影 */
             font-family: inherit;
-            flex-shrink: 0; /* 確保在 overflow-x: auto 中不被壓縮 */
+            flex-shrink: 0; /* 確保不被壓縮 */
         }
 
         .city-button:hover {
             background-color: var(--color-secondary);
             color: #000;
             border-color: var(--color-primary);
-            transform: none; /* 移除 hover 效果，手機上無效且可能造成抖動 */
+            transform: none; 
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
         }
 
@@ -124,7 +126,7 @@
             background-color: var(--color-primary);
             color: white;
             border-color: var(--color-primary);
-            transform: none; /* 移除 translate 避免在手機上產生不預期的效果 */
+            transform: none; 
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
@@ -155,7 +157,7 @@
         }
 
         .day-card:hover {
-            transform: none; /* 移除 hover 效果 */
+            transform: none; 
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
         }
 
@@ -214,7 +216,7 @@
             /* 虛線使用更中性的顏色 */
             border-bottom: 1px dashed var(--color-divider);
             padding: 10px 0;
-            /* ** 行動端優化：防止內容被擠壓 ** */
+            /* 行動端優化：防止內容被擠壓 */
             min-height: 50px;
         }
 
@@ -286,12 +288,6 @@
 
         /* 桌面版 RWD 修正：當螢幕夠寬時，將事件細節改回水平排列 */
         @media (min-width: 641px) {
-            .city-nac
-                flex-wrap: nowrap; /* 在桌面版保持不換行 */
-                overflow-x: auto; /* 為了確保隱藏的長文字不會破版 */
-                white-space: nowrap;
-                padding-bottom: 5px; /* 為了防止陰影被切掉 */
-            }
             .container {
                 max-width: 1000px;
                 margin: 40px auto;
@@ -332,6 +328,15 @@
             .alert-content-wrapper {
                 padding-top: 0;
             }
+            
+            /* ***** 桌面版修正：確保按鈕不會換行 (覆蓋手機版的 flex-wrap: wrap) ***** */
+            .city-nav {
+                flex-wrap: nowrap; /* 在桌面版保持不換行 */
+                overflow-x: auto; 
+                white-space: nowrap;
+                padding-bottom: 5px;
+            }
+            /* ************************************************************ */
         }
     </style>
 </head>
@@ -485,7 +490,7 @@
             if (forceOpen || !isOpen) {
                 // 打開卡片
                 card.classList.add('open');
-                // 使用 inner 的 scrollHeight + padding 的方式來計算最大高度
+                // 使用 inner 的 offsetHeight + padding 的方式來計算最大高度
                 // 給一個略大的值確保內容能完全展示
                 content.style.maxHeight = (inner.offsetHeight + 40) + 'px';
             } else {
@@ -543,11 +548,11 @@
 
                                         if (locationName) {
                                             const encodedLocation = encodeURIComponent(locationName);
-                                            // ** 修正 Google Maps 連結為標準的手機端搜尋 URL **
+                                            // 修正 Google Maps 連結為標準的手機端搜尋 URL
                                             const mapLink = `https://www.google.com/maps/search/?api=1&query=${encodedLocation}`;
 
                                             mapButtonHtml = `
-                                                <a href="${mapLink}" target="_blank"
+                                                <a href="https://www.google.com/maps/search/?api=1&query=${encodedLocation}" target="_blank"
                                                    title="在地圖上開啟 ${locationName}"
                                                    class="map-button flex items-center p-2 bg-red-100 text-red-700 rounded-full
                                                    hover:bg-red-200 hover:text-red-800 transition duration-150 ease-in-out">
@@ -625,4 +630,3 @@
     </script>
 </body>
 </html>
-
