@@ -2,17 +2,15 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <!-- 確保網頁在不同設備上響應良好 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>關西 6 日遊：自駕與城市探索</title>
-    <!-- 引入 Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* 引入中文字體：改為 Noto Serif TC 以配合標楷體風格 */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;500;700&display=swap');
 
         :root {
-            /* 顏色更新為冷色調 */
+            /* 顏色更新為冷色調 (維持原 CANVS 品牌風格) */
             --color-primary: #3a6b8c; /* 深石板藍 (Primary Cool Tone) */
             --color-secondary: #a2c3f0; /* 淺灰藍 (Cool Accent Tone) */
             --color-background: #f7f7f7; /* 輕盈背景 (元素背景) */
@@ -23,35 +21,34 @@
 
         body {
             /* 字體替換為標楷體風格 */
-            font-family: 'DFKai-SB', 'Noto Serif TC', serif; 
+            font-family: 'DFKai-SB', 'Noto Serif TC', serif;
             margin: 0;
             padding: 0;
             /* 背景替換為淡水藍漸層 */
             background-image: linear-gradient(to bottom, #ffffff, #e0f7fa);
             color: var(--color-text);
             line-height: 1.6;
+            /* ** 強化 iOS 滾動性能 ** */
+            -webkit-overflow-scrolling: touch;
         }
 
         header {
-            /* 標題背景圖片：已更換為新的直接圖片連結 */
-            background-image: url('https://t5749850-glitch.github.io/TPE-to-KIX/images/HOME.jpg'); 
+            background-image: url('https://t5749850-glitch.github.io/TPE-to-KIX/images/HOME.jpg');
             background-size: cover;
             background-position: center;
-            
-            min-height: 350px; 
+            /* 調整最小高度，在手機上使用 vh 確保佔據一定螢幕比例 */
+            min-height: 35vh;
+            max-height: 400px;
             color: white;
             padding: 40px 20px;
-            /* === 置中樣式 (保留) === */
             display: flex;
             flex-direction: column;
-            justify-content: center; /* 垂直置中 */
-            align-items: center; /* 水平置中 */
-            /* === 置中樣式結束 === */
-
+            justify-content: center;
+            align-items: center;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
             position: relative;
-            z-index: 1; 
-            overflow: hidden; 
+            z-index: 1;
+            overflow: hidden;
         }
 
         /* 增加一個深色半透明遮罩來提高文字對比度 */
@@ -62,92 +59,86 @@
             right: 0;
             bottom: 0;
             left: 0;
-            background-color: rgba(0, 0, 0, 0.4); 
+            background-color: rgba(0, 0, 0, 0.4);
             z-index: 2;
         }
 
         header h1, header p {
             position: relative;
-            z-index: 3; 
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); 
-            /* 確保文字不會因為 header 的 align-items: center 而被拉寬 */
-            text-align: center; 
+            z-index: 3;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+            text-align: center;
         }
-        
+
         header h1 {
             font-weight: 700;
             margin-bottom: 5px;
             font-size: 2.5em;
         }
 
-        header p {
-            font-weight: 300;
-            opacity: 1;
-        }
-
+        /* Container 調整為行動優先，移除 max-width: 1200px; 讓手機畫面更集中 */
         .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
+            /* 垂直間距調整為 20px，更符合手機的緊湊感 */
+            margin: 20px auto;
+            /* 確保左右兩側有內邊距，避免內容緊貼邊緣 */
+            padding: 0 15px;
         }
 
         /* Tabs/City Navigation */
         .city-nav {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
+            gap: 10px; /* 稍微縮小間距 */
+            margin-bottom: 20px;
+            /* 讓按鈕在小螢幕上可以捲動，而不是換行堆疊 (現代手機常用設計) */
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch; /* iOS 平滑捲動 */
+            white-space: nowrap; /* 確保按鈕不換行 */
+            padding-bottom: 5px; /* 增加一點底部空間，避免陰影被切掉 */
         }
 
-        /* **** 按鈕新樣式 (冷色調) **** */
         .city-button {
-            /* 調整字體大小和粗細 */
-            font-weight: 700; /* 加粗 */
-            font-size: 1.1em; /* 加大 */
-            
-            background-color: var(--color-card-bg); 
+            font-weight: 700;
+            font-size: 1em; /* 在 iPhone 上使用 1em 已經足夠 */
+            background-color: var(--color-card-bg);
             color: var(--color-text);
-            border: 1px solid var(--color-primary); /* 使用主色作為邊框 */
-            padding: 10px 25px; /* 增加內邊距 */
-            border-radius: 25px; /* 改為圓角膠囊形狀 */
+            border: 1px solid var(--color-primary);
+            padding: 8px 18px; /* 調整內邊距以適應更小的字體 */
+            border-radius: 25px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08); /* 添加陰影 */
-            /* 確保字體繼承並在按鈕中顯示 Noto Serif TC */
-            font-family: inherit; 
-            white-space: nowrap; /* 防止按鈕內的文字換行 */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08); /* 縮小陰影 */
+            font-family: inherit;
+            flex-shrink: 0; /* 確保在 overflow-x: auto 中不被壓縮 */
         }
 
         .city-button:hover {
-            background-color: var(--color-secondary); 
+            background-color: var(--color-secondary);
             color: #000;
             border-color: var(--color-primary);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            transform: none; /* 移除 hover 效果，手機上無效且可能造成抖動 */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
         }
-        
-        /* 激活狀態使用主色，文字為白色 */
-        .city-button.active {
-            background-color: var(--color-primary); /* 主色背景 */
-            color: white; /* 白色文字 */
-            border-color: var(--color-primary);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
-        }
-        /* **** 結束: 按鈕新樣式 (冷色調) **** */
 
-        /* Itinerary Timeline */
+        .city-button.active {
+            background-color: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+            transform: none; /* 移除 translate 避免在手機上產生不預期的效果 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Itinerary Timeline (維持 RWD 架構) */
         .timeline {
             position: relative;
-            padding-left: 40px;
+            padding-left: 20px; /* 手機版內縮 */
         }
 
         .timeline::before {
             content: '';
             position: absolute;
             top: 0;
-            left: 15px;
+            left: 5px; /* 調整到左邊線條位置 */
             width: 3px;
             background-color: var(--color-secondary);
             height: 100%;
@@ -156,37 +147,39 @@
         .day-card {
             background-color: var(--color-card-bg);
             border-radius: 10px;
-            margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 15px; /* 減少卡片間距 */
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08); /* 輕微陰影 */
             transition: all 0.3s ease;
             overflow: hidden;
             border-left: 5px solid var(--color-primary);
         }
 
         .day-card:hover {
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-            transform: translateY(-3px);
+            transform: none; /* 移除 hover 效果 */
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
         }
 
         .day-header {
-            padding: 20px 25px;
+            padding: 15px 20px; /* 調整內邊距 */
             cursor: pointer;
-            /* 使用新的主色調作為透明背景 */
-            background-color: rgba(58, 107, 140, 0.1); 
+            background-color: rgba(58, 107, 140, 0.05); /* 更輕微的背景色 */
             display: flex;
             justify-content: space-between;
             align-items: center;
+            /* 增加觸控熱區 */
+            touch-action: manipulation;
         }
 
         .day-title {
-            font-size: 1.5em;
+            font-size: 1.2em;
             font-weight: 700;
             color: var(--color-primary);
         }
 
         .toggle-icon {
-            font-size: 1.5em;
+            font-size: 1.2em;
             transition: transform 0.3s ease;
+            transform: rotate(0deg); /* 確保初始狀態 */
         }
 
         .day-card.open .toggle-icon {
@@ -194,142 +187,144 @@
         }
 
         .day-content {
-            padding: 0 25px;
+            padding: 0 20px;
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.4s ease-out; 
+            transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* 使用更流暢的 cubic-bezier 曲線 */
         }
 
         .day-content-inner {
-            padding-bottom: 20px;
+            padding-bottom: 15px;
             padding-top: 10px;
         }
-        
-        /* 實際圖片顯示的樣式 */
+
         .image-placeholder {
-            height: 250px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            /* 圖片會透過 inline style 設置 */
+            /* 在手機上使用 vh 讓圖片高度更具適應性 */
+            height: 20vh;
+            min-height: 150px;
+            margin-bottom: 15px;
+            border-radius: 6px; /* 稍微縮小圓角 */
             background-size: cover;
             background-position: center;
-            /* 圖片預設載入失敗時的背景色 */
             background-color: var(--color-secondary);
         }
-        
+
         .timeline-event {
             display: flex;
+            /* 虛線使用更中性的顏色 */
             border-bottom: 1px dashed var(--color-divider);
             padding: 10px 0;
-        }
-
-        .timeline-event:last-child {
-            border-bottom: none;
+            /* ** 行動端優化：防止內容被擠壓 ** */
+            min-height: 50px;
         }
 
         .event-time {
-            flex: 0 0 80px;
+            flex: 0 0 60px; /* 調整寬度以適應手機 */
             font-weight: 700;
             color: var(--color-text);
             position: relative;
+            font-size: 0.9em;
         }
 
         .event-time::after {
             content: '•';
             position: absolute;
-            right: -25px;
+            right: -15px; /* 調整圓點位置 */
             color: var(--color-primary);
-            font-size: 1.5em;
+            font-size: 1.3em;
             top: -5px;
         }
-        
+
         .event-detail {
             flex-grow: 1;
-            padding-left: 30px;
-            display: flex; 
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px; 
+            padding-left: 20px;
+            display: flex;
+            flex-direction: column; /* 手機上垂直排列 */
+            align-items: flex-start;
+            gap: 5px;
         }
 
         .event-detail-content {
             flex-grow: 1;
-            /* 允許內容換行 */
-            word-break: break-word; 
+            word-break: break-word;
+            width: 100%; /* 佔滿整行 */
         }
 
         .map-button {
-            /* 確保按鈕不會被內容擠壓而變形 */
-            flex-shrink: 0; 
+            flex-shrink: 0;
+            /* 將按鈕移到內容的右下角 (Align-Self) */
+            align-self: flex-end;
+            margin-top: 5px;
         }
 
-        /* 鮮豔的亮珊瑚紅 (Vibrant Coral/Red) */
         .highlight {
-            font-weight: 700; 
-            color: #FF6347; 
+            font-weight: 700;
+            color: #FF6347;
         }
 
-        /* 警示框樣式維持，但可以使用更中性的冷色調邊框 (若用戶未明確要求，保持紅色警示) */
         .alert-box {
-            background-color: #fcebeb; 
-            border-left: 5px solid #d9534f; /* 警示色維持紅色 */
+            background-color: #fcebeb;
+            border-left: 5px solid #d9534f;
             padding: 15px;
             margin-top: 15px;
             border-radius: 5px;
             font-size: 0.9em;
-            display: flex; 
+            display: flex;
+            /* 在手機上將標題和內容改為垂直排列，但保持 flex 結構 */
+            flex-direction: column;
         }
 
         .alert-box strong {
-            flex-shrink: 0; 
-            margin-right: 5px; 
+            margin-bottom: 5px;
         }
 
         .alert-content-wrapper {
-            flex-grow: 1; 
+            flex-grow: 1;
+            /* 消除 alert 內 p 標籤的預設 margin 避免雙重間距 */
+            padding-top: 5px;
         }
 
-        /* RWD 調整 */
-        @media (max-width: 640px) {
-            header h1 {
-                font-size: 2em;
-            }
-            .day-title {
-                font-size: 1.2em;
-            }
-            .city-nav {
-                gap: 8px;
-            }
-            /* RWD 調整按鈕字體大小 */
-            .city-button {
-                padding: 8px 15px;
-                font-size: 1em; /* 在手機上稍微小一點 */
+        /* 桌面版 RWD 修正：當螢幕夠寬時，將事件細節改回水平排列 */
+        @media (min-width: 641px) {
+            .container {
+                max-width: 1000px;
+                margin: 40px auto;
+                padding: 0 20px;
             }
             .timeline {
-                padding-left: 20px; 
+                padding-left: 40px;
             }
             .timeline::before {
-                left: 5px;
+                left: 15px;
             }
             .event-time {
-                flex: 0 0 60px; 
-                font-size: 0.9em;
+                flex: 0 0 80px;
+                font-size: 1em;
             }
             .event-time::after {
-                right: -15px;
+                right: -25px;
+                font-size: 1.5em;
             }
             .event-detail {
-                padding-left: 20px;
-                flex-direction: column; /* 手機上時間點細節垂直排列 */
-                align-items: flex-start;
-                gap: 5px;
-            }
-            .event-detail-content {
-                width: 100%; /* 佔滿整行 */
+                padding-left: 30px;
+                flex-direction: row; /* 桌面版切回水平 */
+                align-items: center;
+                gap: 10px;
             }
             .map-button {
-                 /* 確保按鈕在新的一行，避免擠壓文字 */
-                align-self: flex-end;
+                align-self: center; /* 水平置中 */
+                margin-top: 0;
+            }
+            .alert-box {
+                flex-direction: row; /* 桌面版切回水平 */
+            }
+            .alert-box strong {
+                flex-shrink: 0;
+                margin-right: 5px;
+                margin-bottom: 0;
+            }
+            .alert-content-wrapper {
+                padding-top: 0;
             }
         }
     </style>
@@ -342,8 +337,7 @@
     </header>
 
     <div class="container">
-        
-        <!-- 城市篩選導航按鈕 -->
+
         <div class="city-nav">
             <button class="city-button active" data-city="all"> 總覽 </button>
             <button class="city-button" data-city="kyoto1">DAY 1京都</button>
@@ -354,7 +348,6 @@
             <button class="city-button" data-city="osaka3">DAY 6大阪</button>
         </div>
 
-        <!-- 行程時間軸容器 -->
         <div class="timeline" id="itinerary-timeline">
         </div>
     </div>
@@ -362,32 +355,32 @@
     <script>
         // 行程資料 (JSON 格式)
         const itineraryData = [
-            { 
-                day: 1, 
-                date: '12/20 (五)', 
-                title: '抵達日：深夜入住京都', 
-                city: 'kyoto1', 
+            {
+                day: 1,
+                date: '12/20 (五)',
+                title: '抵達日：深夜入住京都',
+                city: 'kyoto1',
                 tags: ['機場', '交通'],
                 image: 'https://t5749850-glitch.github.io/TPE-to-KIX/images/DAY1.jpg', // 圖片連結
                 events: [
-                    { time: '12:30', detail: '學校運動會結束返家'}, 
+                    { time: '12:30', detail: '學校運動會結束返家'},
                     { time: '13:30', detail: '出發(家) - 桃園國際機場 (TPE) ', mapLocation: '桃園國際機場 TPE', transport: '機場接送' },
                     { time: '15:00', detail: '抵達桃園國際機場 (TPE) <span class="highlight">【⚠️ 務必提早】</span>' },
                     { time: '18:10', detail: '桃園(TPE) → 大阪 (KIX)', transport: '航班1810-2140' },
                     { time: '21:40', detail: '抵達關西機場 T1' },
                     { time: '22:16', detail: '搭乘 Haruka 列車或機場巴士 前往 京都車站', mapLocation: '京都車站' , transport: 'JR or 機場巴士' },
-                    { time: '23:30', detail: '抵達京都車站'}, 
+                    { time: '23:30', detail: '抵達京都車站'},
                     { time: '23:50', detail: '辦理入住京都飯店', mapLocation: '皇家花園CANVAS酒店 京都二條' , transport: 'JR or Uber' },
                 ],
                 notes: '深夜抵達，請務必事先聯繫飯店告知 Check-in 時間。'
             },
-            { 
-                day: 2, 
-                date: '12/21 (六)', 
-                title: '自駕日：天橋立、伊根舟屋', 
-                city: 'kyoto2', 
+            {
+                day: 2,
+                date: '12/21 (六)',
+                title: '自駕日：天橋立、伊根舟屋',
+                city: 'kyoto2',
                 tags: ['自駕', '秘境'],
-                image: 'https://t5749850-glitch.github.io/TPE-to-KIX/images/DAY2-1.jpg', 
+                image: 'https://t5749850-glitch.github.io/TPE-to-KIX/images/DAY2-1.jpg',
                 events: [
                     { time: '08:30', detail: '京都車站周邊租車點 <span class="highlight">取車並出發</span>', mapLocation: '車站租車 京都營業所', transport: '自駕' },
                     { time: '11:30', detail: '抵達天橋立：傘松公園觀景 (車程約 2.5h)', mapLocation: '天橋立 傘松公園', transport: '自駕/纜車' },
@@ -398,30 +391,30 @@
                 ],
                 notes: '冬季自駕請務必確認具備雪胎或雪鏈，注意山區行車安全。'
             },
-            { 
-                day: 3, 
-                date: '12/22 (日)', 
-                title: '琵琶湖周邊、箱館山滑雪場', 
-                city: 'kyoto3', 
+            {
+                day: 3,
+                date: '12/22 (日)',
+                title: '琵琶湖周邊、箱館山滑雪場',
+                city: 'kyoto3',
                 tags: ['自駕', '歷史'],
-                image: 'https://t5749850-glitch.github.io/TPE-to-KIX/images/DAY3.jpg', 
+                image: 'https://t5749850-glitch.github.io/TPE-to-KIX/images/DAY3.jpg',
                 events: [
                     { time: '08:30', detail: '出發前往八幡堀 (車程約 1h 15m)', mapLocation: '近江八幡 八幡堀', transport: '自駕' },
                     { time: '10:00', detail: '八幡堀：近江八幡水鄉古城', mapLocation: '近江八幡 八幡堀', transport: '' },
                     { time: '12:30', detail: '箱館山滑雪場 / 午餐', mapLocation: '駐車場（箱館山ゴンドラ山麓駅 ）', transport: '自駕' },
                     { time: '16:00', detail: '開始返回京都市區', mapLocation: '京都車站', transport: '自駕' },
-                    { time: '17:30', detail: '完成還車手續 <span class="highlight">（還車前須加滿油）</span>', mapLocation: 'ENEOS Kawaramachi SS /', transport: '自駕' },
+                    { time: '17:30', detail: '完成還車手續 <span class="highlight">（還車前須加滿油）</span>', mapLocation: 'ENEOS Kawaramachi SS', transport: '自駕' },
                     { time: '18:30', detail: '晚餐/休息：京都車站周邊', transport: '公共交通' },
                 ],
                 notes: '請務必事先確認箱館山滑雪場 12 月底的雪況和開放時間。<br>還車前請至周邊加油站加油。'
             },
-            { 
-                day: 4, 
-                date: '12/23 (一)', 
-                title: '城市轉換：伏見稻荷與難波美食', 
-                city: 'osaka1', 
+            {
+                day: 4,
+                date: '12/23 (一)',
+                title: '城市轉換：伏見稻荷與難波美食',
+                city: 'osaka1',
                 tags: ['交通日', '美食'],
-                image: 'https://t5749850-glitch.github.io/TPE-to-KIX/images/DAY4.jpg', 
+                image: 'https://t5749850-glitch.github.io/TPE-to-KIX/images/DAY4.jpg',
                 events: [
                     { time: '09:00', detail: '伏見稻荷大社：千本鳥居', mapLocation: '伏見稻荷大社', transport: 'JR 奈良線' },
                     { time: '12:00', detail: '錦市場 / 午餐：在「京都的廚房」品嚐美食', mapLocation: '京都 錦市場', transport: 'JR or 私鐵' },
@@ -434,11 +427,11 @@
                 ],
                 notes: '這天開始使用公共交通。<br>初步採買 3 coin、uniqlo。 '
             },
-            { 
-                day: 5, 
-                date: '12/24 (二)', 
-                title: '大阪一日遊與聖誕市集', 
-                city: 'osaka2', 
+            {
+                day: 5,
+                date: '12/24 (二)',
+                title: '大阪一日遊與聖誕市集',
+                city: 'osaka2',
                 tags: ['購物', '市場', '聖誕'],
                 image: 'https://t5749850-glitch.github.io/TPE-to-KIX/images/DAY5.png',
                 events: [
@@ -446,18 +439,18 @@
                     { time: '11:00', detail: '通天閣：新世界地標', mapLocation: '通天閣', transport: 'JR or 地鐵'  },
                     { time: '14:00', detail: '天滿市場 (北區) 或 心齋橋 (南區)', mapLocation: '大阪 天滿市場', transport: 'JR or 地鐵' },
                     { time: '17:30', detail: '晚餐：地魚屋台 - 天満店', mapLocation: '地魚屋台 天満店', transport: 'JR or 地鐵' },
-                    { time: '20:00', detail: '梅田藍天大樓 - 聖誕市集</span>', mapLocation: '梅田藍天大樓', transport: 'JR or 地鐵' },
-                    { time: '21:00', detail: '阪急梅田本店9樓 - 聖誕市集</span>', mapLocation: '阪急梅田本店', transport: 'JR or 地鐵' },
+                    { time: '20:00', detail: '梅田藍天大樓 - 聖誕市集', mapLocation: '梅田藍天大樓', transport: 'JR or 地鐵' },
+                    { time: '21:00', detail: '阪急梅田本店9樓 - 聖誕市集', mapLocation: '阪急梅田本店', transport: 'JR or 地鐵' },
                 ],
                 notes: '採買伴手禮及各類商品。<br>行李配重，7Kg * 3人，超額提前購買托運行李一件。'
             },
-            { 
-                day: 6, 
-                date: '12/25 (三)', 
-                title: '回程日：黑門市場與空港', 
-                city: 'osaka3', 
+            {
+                day: 6,
+                date: '12/25 (三)',
+                title: '回程日：黑門市場與空港',
+                city: 'osaka3',
                 tags: ['機場', '市場'],
-                image: 'https://t5749850-glitch.github.io/TPE-to-KIX/images/DAY6.png', 
+                image: 'https://t5749850-glitch.github.io/TPE-to-KIX/images/DAY6.png',
                 events: [
                     { time: '09:00', detail: '黑門市場 / 早餐', mapLocation: '大阪 黑門市場', transport: '步行' },
                     { time: '10:30', detail: '難波站搭乘南海地鐵特級前往關西空港', mapLocation: '南海電鐵 難波站', transport: '南海電鐵' },
@@ -474,29 +467,26 @@
         const cityButtons = document.querySelectorAll('.city-button');
 
         /**
-         * 處理卡片展開/收合的邏輯
+         * 處理卡片展開/收合的邏輯 (優化版本)
          * @param {HTMLElement} card - 行程卡片 DOM 元素
-         * @param {boolean} forceOpen - 是否強制展開
+         * @param {boolean} forceOpen - 是否強制展開（例如：過濾時）
          */
         function toggleCard(card, forceOpen = false) {
             const content = card.querySelector('.day-content');
-            
-            if (forceOpen || !card.classList.contains('open')) {
+            const inner = card.querySelector('.day-content-inner');
+            const isOpen = card.classList.contains('open');
+
+            if (forceOpen || !isOpen) {
                 // 打開卡片
                 card.classList.add('open');
-                // 必須在 DOM 中才能正確計算 scrollHeight
-                // 為了確保平滑過渡，先確保 max-height 為 0
-                content.style.maxHeight = '0px'; 
-                // 延遲後再設置正確的 scrollHeight
-                requestAnimationFrame(() => {
-                    content.style.maxHeight = content.scrollHeight + 'px';
-                });
-
+                // 使用 inner 的 scrollHeight + padding 的方式來計算最大高度
+                // 給一個略大的值確保內容能完全展示
+                content.style.maxHeight = (inner.offsetHeight + 40) + 'px';
             } else {
                 // 關閉卡片
-                // 為了觸發 CSS 過渡，先將 max-height 設為 scrollHeight
+                // 為了觸發 CSS 過渡，先將 max-height 設為目前高度
                 content.style.maxHeight = content.scrollHeight + 'px';
-                
+
                 // 然後在下一幀將其設為 0
                 requestAnimationFrame(() => {
                     card.classList.remove('open');
@@ -510,31 +500,24 @@
             timelineContainer.innerHTML = ''; // 清除現有內容
 
             itineraryData.forEach(day => {
-                if (filterCity === 'all' || day.city === filterCity || (filterCity === 'drive' && day.tags.includes('自駕'))) {
-                    
+                // 篩選邏輯: 顯示 'all' 或符合 city 的卡片
+                if (filterCity === 'all' || day.city === filterCity) {
+
                     const card = document.createElement('div');
                     card.className = 'day-card';
                     card.setAttribute('data-city', day.city);
 
-                    // 圖片渲染邏輯 (如果沒有圖片，則不渲染此區塊)
                     let finalImageUrl = '';
-                    let imageHtml = ''; // 預設為空字串，如果沒有圖片則保持隱藏
+                    let imageHtml = '';
 
                     if (day.image && day.image.startsWith('http')) {
-                        // 處理真實圖片 URL
                         finalImageUrl = day.image;
-                        // 設置背景圖片樣式
                         const imageStyle = `background-image: url('${finalImageUrl}');`;
-
-                        // 生成圖片區塊的 HTML (移除重複的 background-size/position/repeat，CSS class已定義)
                         imageHtml = `<div class="image-placeholder" style="${imageStyle}"></div>`;
-                    } 
+                    }
 
-
-                    // 處理 notes 內容：將 notes 依照 <br> 分割成多個 <p> 標籤
-                    const processedNotes = day.notes.split('<br>').map(line => 
-                        // 使用 Tailwind 協助消除預設 margin/padding
-                        `<p class="m-0 p-0 leading-normal">${line}</p>` 
+                    const processedNotes = day.notes.split('<br>').map(line =>
+                        `<p class="m-0 p-0 leading-normal">${line}</p>`
                     ).join('');
 
                     // 卡片內容結構
@@ -548,26 +531,23 @@
                                 ${imageHtml}
                                 <div class="timeline-details">
                                     ${day.events.map(event => {
-                                        
+
                                         const locationName = event.mapLocation;
                                         let mapButtonHtml = '';
 
-                                        // 核心邏輯：只有當 event.mapLocation 存在時，才生成導航按鈕
                                         if (locationName) {
                                             const encodedLocation = encodeURIComponent(locationName);
-                                            // 使用 Google Maps API URL for search
+                                            // ** 修正 Google Maps 連結為標準的手機端搜尋 URL **
                                             const mapLink = `https://www.google.com/maps/search/?api=1&query=${encodedLocation}`;
 
                                             mapButtonHtml = `
-                                                <!-- Google Maps Button -->
-                                                <a href="${mapLink}" target="_blank" 
+                                                <a href="${mapLink}" target="_blank"
                                                    title="在地圖上開啟 ${locationName}"
-                                                   class="map-button flex items-center p-1.5 bg-red-100 text-red-700 rounded-full 
-                                                          hover:bg-red-200 hover:text-red-800 transition duration-150 ease-in-out flex-shrink-0">
-                                                    <!-- Map Icon (Location Marker) -->
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
-                                                    </svg>
+                                                   class="map-button flex items-center p-2 bg-red-100 text-red-700 rounded-full
+                                                   hover:bg-red-200 hover:text-red-800 transition duration-150 ease-in-out">
+                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                         <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                                                     </svg>
                                                 </a>
                                             `;
                                         }
@@ -578,7 +558,7 @@
                                                 <div class="event-detail">
                                                     <div class="event-detail-content">
                                                         ${event.detail}
-                                                        ${event.transport ? `<span class="text-sm text-gray-500">(${event.transport})</span>` : ''}
+                                                        ${event.transport ? `<span class="text-xs text-gray-500 font-light ml-1">(${event.transport})</span>` : ''}
                                                     </div>
                                                     ${mapButtonHtml}
                                                 </div>
@@ -597,24 +577,23 @@
                     // 1. 立即將卡片添加到 DOM
                     timelineContainer.appendChild(card);
 
-                    // 2. 判斷是否需要自動展開
-                    // *** 關鍵修改：當選擇 'all' 或特定的 'city' 時，都將卡片標記為 open ***
+                    // 2. 判斷是否需要自動展開 (filterCity='all' 或 特定 city)
                     if (filterCity === 'all' || day.city === filterCity) {
-                        card.classList.add('open'); 
+                        card.classList.add('open');
                     }
 
                     // 3. 添加點擊事件監聽器，用於手動開合
                     card.querySelector('.day-header').addEventListener('click', () => {
-                        // 避免自動展開後點擊標題馬上收合
-                        toggleCard(card, false); 
+                        toggleCard(card, false);
                     });
                 }
             });
-            
-            // 在所有卡片都添加到 DOM 後，處理展開的邏輯，以確保 scrollHeight 計算正確
+
+            // 在所有卡片都添加到 DOM 後，處理自動展開的邏輯
             document.querySelectorAll('.day-card.open').forEach(card => {
-                // 使用 requestAnimationFrame 確保 DOM 渲染已完成，然後強制展開
+                // 使用 requestAnimationFrame 確保 DOM 渲染已完成
                 requestAnimationFrame(() => {
+                    // 再次確保卡片狀態，並計算高度
                     toggleCard(card, true);
                 });
             });
