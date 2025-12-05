@@ -91,10 +91,10 @@
             gap: 10px; /* 稍微縮小間距 */
             margin-bottom: 20px;
             /* 讓按鈕在小螢幕上可以捲動，而不是換行堆疊 (現代手機常用設計) */
-            overflow-x: auto;
+            overflow-x: unset;
             -webkit-overflow-scrolling: touch; /* iOS 平滑捲動 */
             white-space: nowrap; /* 確保按鈕不換行 */
-            padding-bottom: 5px; /* 增加一點底部空間，避免陰影被切掉 */
+            padding-bottom: 0px; /* 增加一點底部空間，避免陰影被切掉 */
         }
 
         .city-button {
@@ -286,6 +286,12 @@
 
         /* 桌面版 RWD 修正：當螢幕夠寬時，將事件細節改回水平排列 */
         @media (min-width: 641px) {
+            .city-nac
+                flex-wrap: nowrap; /* 在桌面版保持不換行 */
+                overflow-x: auto; /* 為了確保隱藏的長文字不會破版 */
+                white-space: nowrap;
+                padding-bottom: 5px; /* 為了防止陰影被切掉 */
+            }
             .container {
                 max-width: 1000px;
                 margin: 40px auto;
@@ -619,3 +625,4 @@
     </script>
 </body>
 </html>
+
