@@ -410,14 +410,29 @@
                 tags: ['自駕', '歷史'],
                 image: 'https://t5749850-glitch.github.io/TPE-to-KIX/images/DAY3.jpg',
                 events: [
-                    { time: '08:30', detail: '出發前往八幡堀 (車程約 1h 15m)', mapLocation: '近江八幡 八幡堀', transport: '自駕' },
-                    { time: '10:00', detail: '八幡堀：近江八幡水鄉古城', mapLocation: '近江八幡 八幡堀', transport: '' },
-                    { time: '12:30', detail: '箱館山滑雪場 / 午餐', mapLocation: '駐車場（箱館山ゴンドラ山麓駅 ）', transport: '自駕' },
-                    { time: '16:00', detail: '開始返回京都市區', mapLocation: '京都車站', transport: '自駕' },
+                    { time: '08:00', detail: '出發！前往琵琶湖滑雪區域 (確認雪況)', transport: '自駕' },
+                    { 
+                        time: '09:30',
+                        detail: `<p class="font-bold text-gray-700">滑雪選項 A：箱館山滑雪場 (Hakodateyama)</p>
+                                 <span class="text-sm text-gray-600">從京都市區出發約 1.5 小時車程，距離較近，有可能雪況不佳。</span>
+                                 <p class="text-xs text-red-500 mt-1">⚠️ 請於當天早上確認雪況後，擇一前往！</p>`,
+                        mapLocation: '箱館山滑雪場',
+                        transport: '自駕' 
+                    },
+                    { 
+                        time: '09:30',
+                        detail: `<p class="font-bold text-gray-700">滑雪選項 B：奧伊吹滑雪場 (Okuibuki)</p>
+                                 <span class="text-sm text-gray-600">從京都市區出發約 2 小時車程，雪場較大且雪況通常較佳。</span>
+                                 <p class="text-xs text-red-500 mt-1">⚠️ 請於當天早上確認雪況後，擇一前往！</p>`,
+                        mapLocation: '奧伊吹滑雪場',
+                        transport: '自駕' 
+                    },
+                    { time: '12:30', detail: '在選定的滑雪場用午餐' },
+                    { time: '16:00', detail: '結束滑雪，開始返回京都市區', mapLocation: '京都車站', transport: '自駕' },
                     { time: '17:30', detail: '完成還車手續 <span class="highlight">（還車前須加滿油）</span>', mapLocation: 'ENEOS Kawaramachi SS', transport: '自駕' },
                     { time: '18:30', detail: '晚餐/休息：京都車站周邊', transport: '公共交通' },
                 ],
-                notes: '請務必事先確認箱館山滑雪場 12 月底的雪況和開放時間。<br>還車前請至周邊加油站加油。'
+                notes: '請務必事先查詢箱館山和奧伊吹兩地的 12 月底雪況和開放時間，以做出最佳選擇。<br>還車前請至周邊加油站加油。'
             },
             {
                 day: 4,
@@ -630,3 +645,4 @@
     </script>
 </body>
 </html>
+
