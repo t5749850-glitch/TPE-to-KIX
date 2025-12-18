@@ -2,256 +2,262 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>關西 6 日遊：自駕與城市探索</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>旅遊行程與互動看板</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;500;700&display=swap');
-
         :root {
-            --color-primary: #3a6b8c;
-            --color-secondary: #a2c3f0;
-            --color-background: #f7f7f7;
-            --color-text: #000;
-            --color-card-bg: #fff;
-            --color-divider: #e0e0e0;
+            --primary: #4f46e5;
+            --bg-light: #f9fafb;
         }
-
         body {
-            font-family: 'DFKai-SB', 'Noto Serif TC', serif;
-            margin: 0;
-            padding: 0;
-            background-image: linear-gradient(to bottom, #ffffff, #e0f7fa);
-            color: var(--color-text);
-            line-height: 1.6;
-            -webkit-overflow-scrolling: touch;
+            background-color: var(--bg-light);
+            font-family: system-ui, -apple-system, sans-serif;
         }
-
-        header {
-            background-image: url('https://t5749850-glitch.github.io/TPE-to-KIX/images/HOME.jpg');
+        /* 頂部橫向背景圖樣式 */
+        .hero-section {
+            height: 250px;
+            background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://t5749850-glitch.github.io/TPE-to-KIX/images/HOME.jpg');
             background-size: cover;
             background-position: center;
-            min-height: 35vh;
-            max-height: 400px;
-            color: white;
-            padding: 40px 20px;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            position: relative;
-            z-index: 1;
+            justify-content: center;
+            color: white;
+            text-align: center;
         }
-
-        header::before {
+        .day-card {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .day-header {
+            padding: 1.25rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+        }
+        .day-header:hover { background: #f8fafc; }
+        .day-content { display: none; border-top: 1px solid #f1f5f9; }
+        .day-card.open .day-content { display: block; }
+        .day-card.open .toggle-icon { transform: rotate(90deg); }
+        .toggle-icon { transition: transform 0.2s; color: #94a3b8; }
+        
+        .timeline-event {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 1.5rem;
+            border-left: 2px solid #e2e8f0;
+        }
+        .timeline-event::before {
             content: '';
             position: absolute;
-            top: 0; right: 0; bottom: 0; left: 0;
-            background-color: rgba(0, 0, 0, 0.4);
-            z-index: 2;
+            left: -7px;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 2px solid white;
         }
-
-        header h1, header p { position: relative; z-index: 3; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); text-align: center; }
-        header h1 { font-weight: 700; margin-bottom: 5px; font-size: 2.5em; }
-
-        .container { margin: 20px auto; padding: 0 15px; max-width: 1000px; }
-
-        .city-nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .city-button {
-            font-weight: 700; background-color: var(--color-card-bg);
-            border: 1px solid var(--color-primary); padding: 8px 18px; border-radius: 25px;
-            cursor: pointer; transition: all 0.3s ease;
+        .event-time { font-weight: 600; color: var(--primary); font-size: 0.875rem; }
+        
+        .filter-button {
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            background: #e2e8f0;
+            color: #475569;
+            transition: all 0.2s;
+            white-space: nowrap;
+            font-size: 0.875rem;
+            font-weight: 500;
         }
-        .city-button.active { background-color: var(--color-primary); color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); }
+        .filter-button.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .todo-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-bottom: 1px solid #f1f5f9;
+            cursor: pointer;
+        }
+        .todo-text.done { text-decoration: line-through; color: #94a3b8; }
 
-        .checklist-card { background: white; border-radius: 10px; padding: 20px; border-left: 5px solid #e67e22; box-shadow: 0 3px 10px rgba(0,0,0,0.08); }
-        .todo-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; cursor: pointer; }
-        .todo-item input { margin-right: 12px; width: 18px; height: 18px; accent-color: var(--color-primary); }
-        .todo-text.done { text-decoration: line-through; color: #999; }
-        .cat-title { font-weight: bold; color: var(--color-primary); margin-top: 15px; border-bottom: 1px solid var(--color-secondary); }
-
-        .timeline { position: relative; padding-left: 20px; }
-        .timeline::before { content: ''; position: absolute; top: 0; left: 5px; width: 3px; background-color: var(--color-secondary); height: 100%; }
-        .day-card { background-color: var(--color-card-bg); border-radius: 10px; margin-bottom: 15px; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08); overflow: hidden; border-left: 5px solid var(--color-primary); }
-        .day-header { padding: 15px 20px; cursor: pointer; background-color: rgba(58, 107, 140, 0.05); display: flex; justify-content: space-between; align-items: center; }
-        .day-content { padding: 0 20px; max-height: 0; overflow: hidden; transition: max-height 0.5s ease; }
-        .day-card.open .day-content { max-height: 3000px; }
-        .day-card.open .toggle-icon { transform: rotate(90deg); }
-        .image-placeholder { height: 20vh; min-height: 150px; margin-bottom: 15px; border-radius: 6px; background-size: cover; background-position: center; }
-        .timeline-event { display: flex; border-bottom: 1px dashed var(--color-divider); padding: 10px 0; }
-        .event-time { flex: 0 0 60px; font-weight: 700; color: var(--color-primary); font-size: 0.9em; }
-        .event-detail { flex-grow: 1; padding-left: 20px; }
-        .map-button { background-color: #fcebeb; color: #d9534f; padding: 8px; border-radius: 50%; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; }
-        .alert-box { background-color: #fcebeb; border-left: 5px solid #d9534f; padding: 15px; margin-top: 15px; border-radius: 5px; font-size: 0.9em; color: #d9534f; }
-        .highlight { color: #d9534f; font-weight: bold; }
+        .image-placeholder {
+            width: 100%;
+            height: 150px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            background-color: #eee;
+        }
+        /* 隱藏滾動條但保持功能 */
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>關西 6 日遊 🇯🇵</h1>
-        <p>關西京北秘境與城市探索 — 2025/12/20 至 12/25</p>
-    </header>
-
-    <div class="container">
-        <div class="city-nav">
-            <button class="city-button" data-city="checklist">📋 準備清單</button>
-            <button class="city-button active" data-city="all"> 總覽 </button>
-            <button class="city-button" data-city="kyoto1">DAY 1京都</button>
-            <button class="city-button" data-city="kyoto2">DAY 2京北</button>
-            <button class="city-button" data-city="kyoto3">DAY 3琵琶湖</button>
-            <button class="city-button" data-city="osaka1">DAY 4京阪</button>
-            <button class="city-button" data-city="osaka2">DAY 5大阪</button>
-            <button class="city-button" data-city="osaka3">DAY 6大阪</button>
+    <!-- 頂部橫向背景圖區域 -->
+    <div class="hero-section mb-6">
+        <div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-2">關西6日遊</h1>
+            <p class="text-lg opacity-90">關西京北秘境與城市探索 — 2025/12/20 至 12/25</p>
         </div>
+    </div>
 
-        <div id="checklist-view" class="hidden mb-10">
-            <div class="checklist-card">
-                <h2 class="text-xl font-bold mb-4 text-orange-600">🧳 旅遊用品準備清單</h2>
-                <p id="sync-status" class="text-xs text-gray-400 mb-4">正在同步自 GitHub Gist...</p>
-                <div id="checklist-content"></div>
+    <div class="max-w-4xl mx-auto px-4 pb-8">
+        <header class="mb-8">
+            <!-- 導覽切換按鈕 -->
+            <div class="flex gap-2 overflow-x-auto pb-4 scrollbar-hide border-b border-gray-100" id="filter-bar">
+                <button class="filter-button active" data-filter="all">全部行程</button>
+                <button class="filter-button" data-filter="checklist">📝 準備清單</button>
             </div>
+        </header>
+
+        <!-- 行程列表內容區 -->
+        <div id="itinerary-timeline" class="space-y-4">
+            <div class="text-center p-10 text-gray-500">正在初始化系統並載入行程...</div>
         </div>
 
-        <div class="timeline" id="itinerary-timeline"></div>
+        <!-- 準備清單內容區 -->
+        <div id="checklist-view" class="hidden bg-white rounded-xl shadow p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold">準備清單</h2>
+                <span id="sync-status" class="text-sm text-gray-400">正在同步...</span>
+            </div>
+            <div id="checklist-content" class="space-y-2"></div>
+        </div>
     </div>
 
     <script>
-        // --- Gist 設定 ---
+        // --- 設定 ---
+        const ITINERARY_GIST_URL = 'https://gist.githubusercontent.com/t5749850-glitch/1b2cb36a31022afe02196d5def094198/raw/5cadfa3bb6628d13f29655eaaf350f135a21b0d6/itinerary.json'; 
         const GIST_ID = 'a88a62f92e6fb58e173bb5f04388deea'; 
         const FILE_NAME = 'Travel_List.md'; 
         const GIST_URL = `https://gist.githubusercontent.com/raw/${GIST_ID}/${FILE_NAME}`;
 
-        // --- 行程資料 ---
-        const itineraryData = [
-            {
-                day: 1,
-                date: '12/20 (五)',
-                title: '抵達日：深夜入住京都',
-                city: 'kyoto1',
-                image: 'https://t5749850-glitch.github.io/TPE-to-KIX/images/DAY1.jpg', 
-                events: [
-                    { time: '12:30', detail: '學校運動會結束返家'},
-                    { time: '13:30', detail: '出發(家) - 桃園國際機場 (TPE) ', mapLocation: '桃園國際機場 TPE', transport: '機場接送' },
-                    { time: '15:00', detail: '抵達桃園國際機場 (TPE) <span class="highlight">【⚠️ 務必提早】</span>' },
-                    { time: '18:10', detail: '桃園(TPE) → 大阪 (KIX)', transport: '航班1810-2140' },
-                    { time: '21:40', detail: '抵達關西機場 T1' },
-                    { time: '22:16', detail: '搭乘 Haruka 列車或機場巴士 前往 京都車站', mapLocation: '京都車站' , transport: 'JR or 機場巴士' },
-                    { time: '23:30', detail: '抵達京都車站'},
-                    { time: '23:50', detail: '辦理入住京都飯店', mapLocation: '皇家花園CANVAS酒店 京都二條' , transport: 'JR or Uber' },
-                ],
-                notes: '深夜抵達，請務必事先聯繫飯店告知 Check-in 時間。'
-            },
-            {
-                day: 2,
-                date: '12/21 (六)',
-                title: '自駕日：天橋立、伊根舟屋',
-                city: 'kyoto2',
-                image: 'https://t5749850-glitch.github.io/TPE-to-KIX/images/DAY2-1.jpg',
-                events: [
-                    { time: '08:30', detail: '京都車站周邊租車點 <span class="highlight">取車並出發</span>', mapLocation: '車站租車 京都營業所', transport: '自駕' },
-                    { time: '11:30', detail: '抵達天橋立：傘松公園觀景 (車程約 2.5h)', mapLocation: '天橋立 傘松公園', transport: '自駕/纜車' },
-                    { time: '12:30', detail: '午餐：橋立海産 - 瑞松苑 / 天橋立茶屋', mapLocation: '天橋立茶屋' },
-                    { time: '14:00', detail: '伊根舟屋：體驗伊根灣遊船', mapLocation: '伊根灣觀光船', transport: '自駕' },
-                    { time: '16:00', detail: '道の駅 海の京都宮', mapLocation: '道の駅 海の京都宮', transport: '自駕' },
-                    { time: '17:30', detail: '開始返回京都市區 (車程約 2.5h)', mapLocation: '皇家花園CANVAS酒店 京都二條', transport: '自駕' },
-                ],
-                notes: '冬季自駕請務必確認具備雪胎或雪鏈，注意山區行車安全。'
-            },
-            {
-                day: 3,
-                date: '12/22 (日)',
-                title: '琵琶湖周邊、箱館山滑雪場',
-                city: 'kyoto3',
-                image: 'https://t5749850-glitch.github.io/TPE-to-KIX/images/DAY3.jpg',
-                events: [
-                    { time: '08:00', detail: '出發！前往琵琶湖滑雪區域 (確認雪況)', transport: '自駕' },
-                    { 
-                        time: '09:30',
-                        detail: `<p class="font-bold text-gray-700">滑雪選項 A：箱館山滑雪場 (Hakodateyama)</p>
-                                 <span class="text-sm text-gray-600">從京都市區出發約 1.5 小時車程，距離較近，有可能雪況不佳。</span>
-                                 <p class="text-xs text-red-500 mt-1">⚠️ 請於當天早上確認雪況後，擇一前往！</p>`, 
-                        transport: '自駕', mapLocation: '箱館山滑雪場'
-                    },
-                    { 
-                        time: '09:30',
-                        detail: `<p class="font-bold text-gray-700">滑雪選項 B：奧伊吹滑雪場 (Okuibuki)</p>
-                                 <span class="text-sm text-gray-600">從京都市區出發約 2 小時車程，雪場較大且雪況通常較佳。</span>
-                                 <p class="text-xs text-red-500 mt-1">⚠️ 請於當天早上確認雪況後，擇一前往！</p>`,
-                        transport: '自駕', mapLocation: '奧伊吹滑雪場'
-                    },
-                    { time: '12:30', detail: '在選定的滑雪場用午餐' },
-                    { time: '16:00', detail: '結束滑雪，開始返回京都市區', mapLocation: '京都車站', transport: '自駕' },
-                    { 
-                        time: '17:00',
-                        detail: `<p class="font-bold text-gray-700">近江八幡水鄉古城 (Okuibuki)</p>
-                                 <span class="text-sm text-gray-600">奧伊吹滑雪場返回京都市區路上。</span>
-                                 <p class="text-xs text-red-500 mt-1">如果時間及精神充裕的話可以在回程時前往。</p>`,
-                        transport: '自駕', mapLocation: '八幡堀'
-                    },
-                    { time: '19:30', detail: '完成還車手續 <span class="highlight">（還車前須加滿油）</span>', mapLocation: 'ENEOS Kawaramachi SS', transport: '自駕' },
-                    { time: '20:00', detail: '晚餐/休息：京都車站周邊', transport: '公共交通' },
-                ],
-                notes: '還車前請至周邊加油站加油。'
-            },
-            {
-                day: 4,
-                date: '12/23 (一)',
-                title: '城市轉換：伏見稻荷與難波美食',
-                city: 'osaka1',
-                image: 'https://t5749850-glitch.github.io/TPE-to-KIX/images/DAY4.jpg',
-                events: [
-                    { time: '09:00', detail: '伏見稻荷大社：千本鳥居', mapLocation: '伏見稻荷大社', transport: 'JR 奈良線' },
-                    { time: '12:00', detail: '錦市場 / 午餐：在「京都的廚房」品嚐美食', mapLocation: '京都 錦市場', transport: 'JR or 私鐵' },
-                    { time: '15:00', detail: '京都 → 大阪難波', mapLocation: '大阪難波站', transport: 'JR or 私鐵' },
-                    { time: '16:30', detail: '辦理入住 APA 飯店', mapLocation: 'APA HOTEL＆RESORT OSAKA NAMBA EKIMAE TOWER' },
-                    { time: '17:00', detail: '天王寺公園「てんしば」聖誕市集', mapLocation: '天王寺公園「てんしば」', transport: '步行' },
-                    { time: '18:00', detail: '晚餐：Naniwa Sushi', mapLocation: 'Naniwa Sushi', transport: '步行' },
-                    { time: '19:00', detail: '難波Walk(地下街)B1 : 3 coin & Uniqlo', mapLocation: '難波Walk(地下街)B1', transport: '步行' },
-                    { time: '20:00', detail: '道頓堀 / 心齋橋', mapLocation: '大阪 道頓堀 ', transport: '步行' },
-                ],
-                notes: '這天開始使用公共交通。'
-            },
-            {
-                day: 5,
-                date: '12/24 (二)',
-                title: '大阪一日遊與聖誕市集',
-                city: 'osaka2',
-                image: 'https://t5749850-glitch.github.io/TPE-to-KIX/images/DAY5.png',
-                events: [
-                    { time: '08:00', detail: '木津市場：海鮮早餐', mapLocation: '大阪 木津市場', transport: 'JR or 地鐵' },
-                    { time: '09:00', detail: '六甲山滑雪場 (六甲纜車 山下站)', mapLocation: '六甲纜車 山下站', transport: 'JR or 地鐵' },
-                    { time: '11:00', detail: '通天閣', mapLocation: '通天閣', transport: 'JR or 地鐵、如沒前往滑雪場'  },
-                    { time: '16:00', detail: '天滿市場 或 心齋橋', mapLocation: '大阪 天滿市場', transport: 'JR or 地鐵' },
-                    { time: '17:30', detail: '晚餐：地魚屋台', mapLocation: '地魚屋台 天滿店', transport: 'JR or 地鐵' },
-                    { time: '20:00', detail: '梅田藍天大樓 - 聖誕市集', mapLocation: '梅田藍天大樓', transport: 'JR or 地鐵' },
-                    { time: '21:00', detail: '阪急梅田本店9樓 - 聖誕市集', mapLocation: '阪急梅田本店', transport: 'JR or 地鐵' },
-                ],
-                notes: '行李配重，7Kg * 3人，超額提前購買托運行李。'
-            },
-            {
-                day: 6,
-                date: '12/25 (三)',
-                title: '回程日：黑門市場與空港',
-                city: 'osaka3',
-                image: 'https://t5749850-glitch.github.io/TPE-to-KIX/images/DAY6.png',
-                events: [
-                    { time: '09:00', detail: '黑門市場 / 早餐', mapLocation: '大阪 黑門市場', transport: '步行' },
-                    { time: '10:30', detail: '搭乘南海地鐵特級前往關西空港', mapLocation: '南海電鐵 難波站', transport: '南海電鐵' },
-                    { time: '12:00', detail: '抵達關西空港', mapLocation: '大阪 關西國際機場 KIX' },
-                    { time: '14:50', detail: '大阪 → 桃園', mapLocation: '桃園國際機場 TPE', transport: '飛機1450-1710' },
-                    { time: '17:10', detail: '抵達桃園機場T1' },
-                    { time: '17:40', detail: '機場接送', transport: '桃園機場T1 => 返家' },
-                ],
-                notes: '伴手禮建議前一天買齊。'
-            }
-        ];
+        // --- 狀態 ---
+        let itineraryData = [];
 
-        // --- 清單功能 ---
+        // --- 初始化 ---
+        async function initApp() {
+            const timeline = document.getElementById('itinerary-timeline');
+            
+            try {
+                const res = await fetch(ITINERARY_GIST_URL + '?t=' + new Date().getTime());
+                if (!res.ok) throw new Error('無法取得行程資料');
+                
+                itineraryData = await res.json();
+                generateDayButtons();
+                renderItinerary('all');
+            } catch (e) {
+                console.error(e);
+                timeline.innerHTML = `<div class="p-6 bg-red-50 text-red-600 rounded-lg">⚠️ 行程載入失敗，請確認網路連線。</div>`;
+            }
+        }
+
+        // --- 動態生成日期按鈕 ---
+        function generateDayButtons() {
+            const filterBar = document.getElementById('filter-bar');
+            const checklistBtn = filterBar.querySelector('[data-filter="checklist"]');
+            
+            itineraryData.forEach(day => {
+                const btn = document.createElement('button');
+                btn.className = 'filter-button';
+                btn.dataset.filter = day.day;
+                btn.textContent = `Day ${day.day}`;
+                btn.onclick = () => handleFilterClick(btn);
+                filterBar.insertBefore(btn, checklistBtn);
+            });
+
+            filterBar.querySelector('[data-filter="all"]').onclick = function() { handleFilterClick(this); };
+            checklistBtn.onclick = function() { handleFilterClick(this); };
+        }
+
+        // --- 處理按鈕點擊 ---
+        function handleFilterClick(clickedBtn) {
+            document.querySelectorAll('.filter-button').forEach(b => b.classList.remove('active'));
+            clickedBtn.classList.add('active');
+            renderItinerary(clickedBtn.dataset.filter);
+            // 改為滾動到按鈕下方的位置，保留 Hero 圖可見度或完全置頂
+            window.scrollTo({ top: 220, behavior: 'smooth' });
+        }
+
+        // --- 行程渲染邏輯 ---
+        function renderItinerary(filter) {
+            const timeline = document.getElementById('itinerary-timeline');
+            const checklistView = document.getElementById('checklist-view');
+            
+            if (filter === 'checklist') {
+                timeline.classList.add('hidden');
+                checklistView.classList.remove('hidden');
+                loadChecklist();
+                return;
+            }
+
+            timeline.classList.remove('hidden');
+            checklistView.classList.add('hidden');
+            timeline.innerHTML = '';
+
+            itineraryData.forEach(day => {
+                if (filter === 'all' || String(day.day) === String(filter)) {
+                    const card = document.createElement('div');
+                    card.className = 'day-card open';
+                    card.id = `day-card-${day.day}`;
+                    card.innerHTML = `
+                        <div class="day-header" onclick="this.parentElement.classList.toggle('open')">
+                            <div>
+                                <span class="bg-indigo-100 text-indigo-700 px-2 py-1 rounded text-xs font-bold mr-2">DAY ${day.day}</span>
+                                <h2 class="inline-block font-bold text-gray-700">${day.date} | ${day.city} · ${day.title}</h2>
+                            </div>
+                            <span class="toggle-icon">▶</span>
+                        </div>
+                        <div class="day-content">
+                            <div class="p-5">
+                                ${day.image ? `<div class="image-placeholder" style="background-image:url('${day.image}')"></div>` : ''}
+                                <div class="space-y-4">
+                                    ${day.events.map(e => `
+                                        <div class="timeline-event">
+                                            <div class="event-time">${e.time}</div>
+                                            <div class="flex justify-between items-start">
+                                                <div class="text-gray-700">
+                                                    <p class="font-medium">${e.detail}</p>
+                                                    ${e.transport ? `<p class="text-xs text-gray-400 mt-1">🚗 ${e.transport}</p>` : ''}
+                                                </div>
+                                                ${e.mapLocation ? `
+                                                    <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.mapLocation)}" 
+                                                       target="_blank" class="p-2 bg-gray-50 rounded-full hover:bg-indigo-50 text-indigo-500 transition-colors">
+                                                        📍
+                                                    </a>` : ''}
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                ${day.notes ? `<div class="mt-4 p-3 bg-amber-50 border-l-4 border-amber-400 text-amber-800 text-sm"><strong>💡 備註:</strong> ${day.notes}</div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                    timeline.appendChild(card);
+                }
+            });
+        }
+
+        // --- 準備清單讀取 ---
         async function loadChecklist() {
             const container = document.getElementById('checklist-content');
             const status = document.getElementById('sync-status');
+            container.innerHTML = '<div class="text-center py-10 text-gray-400">正在讀取 GitHub 清單...</div>';
+            
             try {
                 const res = await fetch(GIST_URL + '?t=' + new Date().getTime());
                 if (!res.ok) throw new Error();
@@ -259,7 +265,7 @@
                 status.textContent = '✅ 已與 GitHub 同步';
                 renderChecklist(text);
             } catch (e) {
-                status.textContent = '⚠️ 同步失敗，顯示預設內容';
+                status.textContent = '⚠️ 載入失敗，顯示離線版本';
                 renderChecklist("## 🚗 自駕必備\n- [ ] 台灣駕照正本\n- [ ] 日文譯本\n- [ ] 信用卡\n## 🛂 重要證件\n- [ ] 護照\n- [ ] Visit Japan Web");
             }
         }
@@ -273,19 +279,25 @@
                 const text = line.trim();
                 if (text.startsWith('##')) {
                     const h = document.createElement('div');
-                    h.className = 'cat-title p-2 mt-4';
-                    h.textContent = text.replace('##', '');
+                    h.className = 'font-bold text-gray-800 border-b pb-2 mb-2 mt-6';
+                    h.textContent = text.replace('##', '').trim();
                     container.appendChild(h);
                 } else if (text.includes('- [ ]') || text.startsWith('-')) {
                     const label = text.replace(/- \[[x ]\] /g, '').replace(/- /g, '').trim();
                     if(!label) return;
+                    
                     const item = document.createElement('div');
-                    item.className = 'todo-item';
+                    item.className = 'todo-item hover:bg-gray-50 rounded-lg';
                     const isChecked = saved[label] || false;
-                    item.innerHTML = `<input type="checkbox" ${isChecked ? 'checked' : ''}><span class="todo-text ${isChecked ? 'done' : ''}">${label}</span>`;
+                    
+                    item.innerHTML = `
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mr-3" ${isChecked ? 'checked' : ''}>
+                        <span class="todo-text ${isChecked ? 'done' : ''}">${label}</span>
+                    `;
+                    
                     item.onclick = (e) => {
                         const cb = item.querySelector('input');
-                        if (e.target.tagName !== 'INPUT') cb.checked = !cb.checked;
+                        if (e.target !== cb) cb.checked = !cb.checked;
                         item.querySelector('span').classList.toggle('done', cb.checked);
                         saved[label] = cb.checked;
                         localStorage.setItem('jp_checklist_v1', JSON.stringify(saved));
@@ -295,63 +307,7 @@
             });
         }
 
-        // --- 行程渲染 ---
-        function renderItinerary(filter) {
-            const timeline = document.getElementById('itinerary-timeline');
-            const checklistView = document.getElementById('checklist-view');
-            
-            if (filter === 'checklist') {
-                timeline.classList.add('hidden');
-                checklistView.classList.remove('hidden');
-                loadChecklist();
-                return;
-            }
-            timeline.classList.remove('hidden');
-            checklistView.classList.add('hidden');
-            timeline.innerHTML = '';
-
-            itineraryData.forEach(day => {
-                if (filter === 'all' || day.city === filter) {
-                    const card = document.createElement('div');
-                    card.className = 'day-card open';
-                    card.innerHTML = `
-                        <div class="day-header" onclick="this.parentElement.classList.toggle('open')">
-                            <h2 class="day-title">Day ${day.day} | ${day.date} | ${day.title}</h2>
-                            <span class="toggle-icon">▶</span>
-                        </div>
-                        <div class="day-content">
-                            <div class="p-5">
-                                <div class="image-placeholder" style="background-image:url('${day.image}')"></div>
-                                ${day.events.map(e => `
-                                    <div class="timeline-event">
-                                        <div class="event-time">${e.time}</div>
-                                        <div class="event-detail flex justify-between items-center">
-                                            <span>
-                                                ${e.detail} 
-                                                ${e.transport ? `<small class="text-gray-400">(${e.transport})</small>` : ''}
-                                            </span>
-                                            ${e.mapLocation ? `<a href="https://www.google.com/maps/search/${encodeURIComponent(e.mapLocation)}" target="_blank" class="map-button">📍</a>` : ''}
-                                        </div>
-                                    </div>
-                                `).join('')}
-                                <div class="alert-box"><strong>💡 備註:</strong> ${day.notes}</div>
-                            </div>
-                        </div>
-                    `;
-                    timeline.appendChild(card);
-                }
-            });
-        }
-
-        document.querySelectorAll('.city-button').forEach(btn => {
-            btn.onclick = () => {
-                document.querySelectorAll('.city-button').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                renderItinerary(btn.dataset.city);
-            };
-        });
-
-        window.onload = () => renderItinerary('all');
+        window.onload = initApp;
     </script>
 </body>
 </html>
