@@ -106,9 +106,6 @@
             margin-bottom: 1rem;
             background-color: #eee;
         }
-        /* 隱藏滾動條但保持功能 */
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body>
@@ -123,8 +120,8 @@
 
     <div class="max-w-4xl mx-auto px-4 pb-8">
         <header class="mb-8">
-            <!-- 導覽切換按鈕 -->
-            <div class="flex gap-2 overflow-x-auto pb-4 scrollbar-hide border-b border-gray-100" id="filter-bar">
+            <!-- 導覽切換按鈕：移除 overflow-x-auto 與 scrollbar-hide，改用 flex-wrap -->
+            <div class="flex flex-wrap gap-2 pb-4 border-b border-gray-100" id="filter-bar">
                 <button class="filter-button" data-filter="checklist">📝 準備清單</button>
                 <button class="filter-button active" data-filter="all">全部行程</button>
             </div>
@@ -232,7 +229,6 @@
                                 ${day.image ? `<div class="image-placeholder" style="background-image:url('${day.image}')"></div>` : ''}
                                 <div class="space-y-4">
                                     ${day.events.map(e => {
-                                        // 判斷是否「沒有特別提示」（無交通資訊且無地圖位置）
                                         const noSpecialInfo = !e.transport && !e.mapLocation;
                                         return `
                                         <div class="timeline-event">
@@ -319,4 +315,3 @@
     </script>
 </body>
 </html>
-
