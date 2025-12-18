@@ -67,6 +67,12 @@
         }
         .event-time { font-weight: 600; color: var(--primary); font-size: 0.875rem; }
         
+        /* Highlight 樣式：針對沒有額外提示的事件進行視覺強化 */
+        .event-highlight {
+            color: #111827; /* 更深、更醒目的文字顏色 */
+            font-size: 1.05rem;
+        }
+
         .filter-button {
             padding: 0.5rem 1rem;
             border-radius: 9999px;
@@ -119,8 +125,8 @@
         <header class="mb-8">
             <!-- 導覽切換按鈕 -->
             <div class="flex gap-2 overflow-x-auto pb-4 scrollbar-hide border-b border-gray-100" id="filter-bar">
-                <button class="filter-button active" data-filter="all">全部行程</button>
                 <button class="filter-button" data-filter="checklist">📝 準備清單</button>
+                <button class="filter-button active" data-filter="all">全部行程</button>
             </div>
         </header>
 
@@ -141,7 +147,7 @@
 
     <script>
         // --- 設定 ---
-        const ITINERARY_GIST_URL = 'https://gist.githubusercontent.com/t5749850-glitch/1b2cb36a31022afe02196d5def094198/raw/5cadfa3bb6628d13f29655eaaf350f135a21b0d6/itinerary.json'; 
+        const ITINERARY_GIST_URL = 'https://gist.githubusercontent.com/t5749850-glitch/1b2cb36a31022afe02196d5def094198/raw/98b2bff7c74f50e8095b1e34aab085caf0790583/itinerary.json'; 
         const GIST_ID = 'a88a62f92e6fb58e173bb5f04388deea'; 
         const FILE_NAME = 'Travel_List.md'; 
         const GIST_URL = `https://gist.githubusercontent.com/raw/${GIST_ID}/${FILE_NAME}`;
@@ -169,19 +175,19 @@
         // --- 動態生成日期按鈕 ---
         function generateDayButtons() {
             const filterBar = document.getElementById('filter-bar');
-            const checklistBtn = filterBar.querySelector('[data-filter="checklist"]');
             
+            // 將 Day 按鈕插入在最後面
             itineraryData.forEach(day => {
                 const btn = document.createElement('button');
                 btn.className = 'filter-button';
                 btn.dataset.filter = day.day;
                 btn.textContent = `Day ${day.day}`;
                 btn.onclick = () => handleFilterClick(btn);
-                filterBar.insertBefore(btn, checklistBtn);
+                filterBar.appendChild(btn);
             });
 
             filterBar.querySelector('[data-filter="all"]').onclick = function() { handleFilterClick(this); };
-            checklistBtn.onclick = function() { handleFilterClick(this); };
+            filterBar.querySelector('[data-filter="checklist"]').onclick = function() { handleFilterClick(this); };
         }
 
         // --- 處理按鈕點擊 ---
@@ -189,7 +195,6 @@
             document.querySelectorAll('.filter-button').forEach(b => b.classList.remove('active'));
             clickedBtn.classList.add('active');
             renderItinerary(clickedBtn.dataset.filter);
-            // 改為滾動到按鈕下方的位置，保留 Hero 圖可見度或完全置頂
             window.scrollTo({ top: 220, behavior: 'smooth' });
         }
 
@@ -226,22 +231,25 @@
                             <div class="p-5">
                                 ${day.image ? `<div class="image-placeholder" style="background-image:url('${day.image}')"></div>` : ''}
                                 <div class="space-y-4">
-                                    ${day.events.map(e => `
+                                    ${day.events.map(e => {
+                                        // 判斷是否「沒有特別提示」（無交通資訊且無地圖位置）
+                                        const noSpecialInfo = !e.transport && !e.mapLocation;
+                                        return `
                                         <div class="timeline-event">
                                             <div class="event-time">${e.time}</div>
                                             <div class="flex justify-between items-start">
                                                 <div class="text-gray-700">
-                                                    <p class="font-medium">${e.detail}</p>
+                                                    <p class="font-medium ${noSpecialInfo ? 'event-highlight' : ''}">${e.detail}</p>
                                                     ${e.transport ? `<p class="text-xs text-gray-400 mt-1">🚗 ${e.transport}</p>` : ''}
                                                 </div>
                                                 ${e.mapLocation ? `
                                                     <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.mapLocation)}" 
                                                        target="_blank" class="p-2 bg-gray-50 rounded-full hover:bg-indigo-50 text-indigo-500 transition-colors">
-                                                        📍
+                                                       📍
                                                     </a>` : ''}
                                             </div>
                                         </div>
-                                    `).join('')}
+                                    `;}).join('')}
                                 </div>
                                 ${day.notes ? `<div class="mt-4 p-3 bg-amber-50 border-l-4 border-amber-400 text-amber-800 text-sm"><strong>💡 備註:</strong> ${day.notes}</div>` : ''}
                             </div>
